@@ -95,45 +95,173 @@ export function VoiceRecorder({ onDone, onCancel, onError }: { onDone: (blob: Bl
 export function VoicePlayer({ path, durationMs, mine }: { path: string | null; durationMs?: number; mine?: boolean }) {
   const { url, failed } = useSignedUrl(path);
   const audio = useRef<HTMLAudioElement>(null);
+  const trackRef = useRef<HTMLDivElement>(null);
   const [playing, setPlaying] = useState(false);
   const [pos, setPos] = useState(0);
+  const [duration, setDuration] = useState(durationMs ?? 0);
+  const [speed, setSpeed] = useState<1 | 1.5 | 2>(1);
+  const [scrubbing, setScrubbing] = useState(false);
   const [error, setError] = useState(false);
-  const total = durationMs ?? 0;
+
+  useEffect(() => {
+    if (durationMs && durationMs > 0) {
+      setDuration(durationMs);
+    }
+  }, [durationMs]);
+
+  const seekTo = (clientX: number) => {
+    const el = trackRef.current;
+    if (!el || !duration) return;
+    const rect = el.getBoundingClientRect();
+    const frac = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
+    const targetMs = frac * duration;
+    setPos(targetMs);
+    if (audio.current) {
+      audio.current.currentTime = targetMs / 1000;
+    }
+  };
+
+  const onPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
+    e.stopPropagation();
+    if (!url || error) return;
+    setScrubbing(true);
+    e.currentTarget.setPointerCapture(e.pointerId);
+    seekTo(e.clientX);
+  };
+
+  const onPointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (!scrubbing) return;
+    seekTo(e.clientX);
+  };
+
+  const onPointerUp = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (!scrubbing) return;
+    setScrubbing(false);
+    try {
+      e.currentTarget.releasePointerCapture(e.pointerId);
+    } catch {}
+  };
+
+  const toggleSpeed = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    const nextSpeed: 1 | 1.5 | 2 = speed === 1 ? 1.5 : speed === 1.5 ? 2 : 1;
+    setSpeed(nextSpeed);
+    if (audio.current) {
+      audio.current.playbackRate = nextSpeed;
+    }
+  };
+
+  const togglePlay = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    const a = audio.current;
+    if (!a) return;
+    if (a.paused) {
+      a.playbackRate = speed;
+      a.play().catch(() => setError(true));
+    } else {
+      a.pause();
+    }
+  };
+
+  const percent = duration > 0 ? Math.min(100, Math.max(0, (pos / duration) * 100)) : 0;
 
   return (
-    <div className="flex w-56 max-w-full items-center gap-3 py-1">
+    <div
+      onClick={(e) => e.stopPropagation()}
+      onPointerDown={(e) => e.stopPropagation()}
+      className="flex w-64 max-w-full select-none items-center gap-2.5 py-1"
+    >
       <button
+        type="button"
         aria-label={playing ? "Pause voice note" : "Play voice note"}
         disabled={!url || error}
-        onClick={(e) => {
-          e.stopPropagation();
-          const a = audio.current;
-          if (!a) return;
-          if (a.paused) a.play().catch(() => setError(true));
-          else a.pause();
-        }}
-        className={cn("grid h-10 w-10 shrink-0 place-items-center rounded-full", mine ? "bg-black/15" : "bg-white/10")}
+        onClick={togglePlay}
+        className={cn(
+          "grid h-10 w-10 shrink-0 place-items-center rounded-full transition active:scale-95",
+          mine ? "bg-black/15 hover:bg-black/25" : "bg-white/10 hover:bg-white/20"
+        )}
       >
         {!url && !failed ? <Spinner /> : playing ? <IconPause size={16} /> : <IconPlayTri size={16} />}
       </button>
-      <div className="flex-1">
-        <div className="h-1.5 overflow-hidden rounded-full bg-current/20" style={{ backgroundColor: "color-mix(in oklab, currentColor 20%, transparent)" }}>
-          <div className="h-full rounded-full bg-current transition-[width]" style={{ width: total ? `${Math.min(100, (pos / total) * 100)}%` : "0%" }} />
+
+      <div className="flex-1 min-w-0">
+        <div
+          ref={trackRef}
+          onPointerDown={onPointerDown}
+          onPointerMove={onPointerMove}
+          onPointerUp={onPointerUp}
+          onPointerCancel={onPointerUp}
+          className="group/track relative flex h-6 w-full cursor-pointer touch-none items-center"
+          role="slider"
+          aria-label="Seek voice note"
+          aria-valuemin={0}
+          aria-valuemax={100}
+          aria-valuenow={Math.round(percent)}
+        >
+          {/* Track background */}
+          <div
+            className="h-1.5 w-full overflow-hidden rounded-full bg-current/20"
+            style={{ backgroundColor: "color-mix(in oklab, currentColor 20%, transparent)" }}
+          >
+            <div className="h-full rounded-full bg-current" style={{ width: `${percent}%` }} />
+          </div>
+
+          {/* Scrubber thumb/dot */}
+          <div
+            className={cn(
+              "pointer-events-none absolute top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-current shadow transition-transform",
+              scrubbing ? "h-4 w-4 scale-110" : "h-3.5 w-3.5 group-hover/track:scale-125"
+            )}
+            style={{ left: `${percent}%` }}
+          />
         </div>
-        <div className="mt-1 flex justify-between text-[11px] opacity-75 tabular-nums">
-          <span>{error || failed ? "Can't play this here" : formatDuration(pos)}</span>
-          <span>{formatDuration(total)}</span>
+
+        <div className="flex justify-between text-[11px] opacity-75 tabular-nums">
+          <span>{error || failed ? "Can't play this" : formatDuration(pos)}</span>
+          <span>{formatDuration(duration)}</span>
         </div>
       </div>
+
+      {/* WhatsApp-style speed badge (1x, 1.5x, 2x) */}
+      <button
+        type="button"
+        title="Change playback speed"
+        aria-label={`Playback speed ${speed}x. Tap to change.`}
+        onClick={toggleSpeed}
+        className={cn(
+          "shrink-0 rounded-full px-2 py-0.5 text-[11px] font-bold tabular-nums transition active:scale-95",
+          mine ? "bg-black/15 hover:bg-black/25" : "bg-white/15 hover:bg-white/25"
+        )}
+      >
+        {speed}×
+      </button>
+
       {url && (
         <audio
           ref={audio}
           src={url}
-          preload="none"
+          preload="metadata"
+          onLoadedMetadata={(e) => {
+            const d = e.currentTarget.duration;
+            if (Number.isFinite(d) && d > 0) {
+              setDuration(d * 1000);
+            }
+            if (audio.current) {
+              audio.current.playbackRate = speed;
+            }
+          }}
           onPlay={() => setPlaying(true)}
           onPause={() => setPlaying(false)}
-          onEnded={() => (setPlaying(false), setPos(0))}
-          onTimeUpdate={(e) => setPos(e.currentTarget.currentTime * 1000)}
+          onEnded={() => {
+            setPlaying(false);
+            setPos(0);
+            if (audio.current) audio.current.currentTime = 0;
+          }}
+          onTimeUpdate={(e) => {
+            if (!scrubbing) {
+              setPos(e.currentTarget.currentTime * 1000);
+            }
+          }}
           onError={() => setError(true)}
         />
       )}
