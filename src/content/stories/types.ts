@@ -6,6 +6,14 @@
 // `npm test` validates every story (no broken links, every node reachable,
 // every path ends, at least two distinct endings).
 
+export type StoryCategory =
+  | "just-you-and-me"
+  | "our-love"
+  | "deep-emotional"
+  | "dark-romance"
+  | "sensual-romance"
+  | "adventure-fantasy";
+
 export type SceneKey =
   | "city-night"
   | "bridge"
@@ -18,7 +26,13 @@ export type SceneKey =
   | "dragon"
   | "kitchen"
   | "home"
-  | "stars";
+  | "stars"
+  | "train"
+  | "candlelight"
+  | "island"
+  | "manor"
+  | "rooftop"
+  | "balcony";
 
 export type StoryChoice = { label: string; to: string };
 
@@ -35,6 +49,9 @@ export type Story = {
   title: string;
   tagline: string;
   emoji: string;
+  category?: StoryCategory;
+  synopsis?: string;
+  estimatedMinutes?: number;
   palette: [string, string];
   chapters: string[];
   start: string;

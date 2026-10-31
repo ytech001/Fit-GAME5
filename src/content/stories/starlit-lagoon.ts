@@ -5,6 +5,10 @@ export const starlitLagoon: Story = {
   title: "Whispers Across the Lagoon",
   tagline: "A silent wooden boat, glowing paper lanterns, and promises written upon the water.",
   emoji: "🛶",
+  category: "sensual-romance",
+  synopsis:
+    "A private midnight boat drifting across glass waters under starlight. Glowing paper lanterns carrying whispered dreams, hands brushing in the cool water, and an intimate shoreline surrender where time stands still for two lovers.",
+  estimatedMinutes: 16,
   palette: ["#022c22", "#34d399"],
   chapters: [
     "I. The Jetty at Midnight",

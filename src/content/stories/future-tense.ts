@@ -5,6 +5,10 @@ export const futureTense: Story = {
   title: "Twenty Years From Now",
   tagline: "A white veranda by the sea, rocking chairs, silver threads in our hair, and a love that outlasted time.",
   emoji: "🌅",
+  category: "just-you-and-me",
+  synopsis:
+    "Gazing decades into the future, {A} and {B} wake on a breezy white veranda overlooking the Atlantic ocean. Through albums of old travel receipts and weathered hands intertwined, they retrace every season of building a life, growing old together, and falling in love anew every dawn.",
+  estimatedMinutes: 14,
   palette: ["#0f172a", "#f59e0b"],
   chapters: [
     "I. The Ocean Veranda",

@@ -5,6 +5,10 @@ export const lagosToDelta: Story = {
   title: "Flight to Delta: 432km to You",
   tagline: "432 kilometers between Lagos and Delta State, bridged by one midnight ticket.",
   emoji: "✈️",
+  category: "adventure-fantasy",
+  synopsis:
+    "When distance feels unbearable, {A} buys a spontaneous dawn flight from Lagos to Delta State. Through tarmac runways, country roads, and heart-pounding anticipation, the journey culminates in an unforgettable surprise reunion on {B}'s doorstep.",
+  estimatedMinutes: 16,
   palette: ["#f59e0b", "#3b82f6"],
   chapters: [
     "The 2 A.M. Decision",

@@ -5,6 +5,10 @@ export const parisInterlude: Story = {
   title: "Our Little Apartment in Paris",
   tagline: "Montmartre cobblestones, warm buttery croissants, and kissing under a shared umbrella near the Seine.",
   emoji: "🥐",
+  category: "sensual-romance",
+  synopsis:
+    "An intimate Parisian holiday in a sun-drenched Montmartre apartment: warm buttery croissants in bed, antique flower markets by the Seine, stolen kisses under a shared umbrella in the rain, and late-night jazz in a candlelit stone cellar.",
+  estimatedMinutes: 15,
   palette: ["#831843", "#f43f5e"],
   chapters: [
     "I. Morning in Montmartre",

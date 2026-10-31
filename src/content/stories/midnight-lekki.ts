@@ -5,6 +5,10 @@ export const midnightLekki: Story = {
   title: "Midnight on Admiralty Way",
   tagline: "The windows down, warm Atlantic wind, and the whole city sleeping beneath us.",
   emoji: "🏎️",
+  category: "just-you-and-me",
+  synopsis:
+    "Midnight in Lekki: warm Atlantic breeze rushing through open car windows, favorite afro-soul playlists humming from the speakers, spicy midnight suya by the waterfront, and slow dancing on the empty sands of Tarkwa Bay while the city sleeps.",
+  estimatedMinutes: 15,
   palette: ["#10b981", "#f59e0b"],
   chapters: [
     "The Late-Night Escape",

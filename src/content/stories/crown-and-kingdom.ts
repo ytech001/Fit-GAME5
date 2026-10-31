@@ -5,6 +5,10 @@ export const crownAndKingdom: Story = {
   title: "The King & Queen of the Seven Islands",
   tagline: "An emerald dragon soaring above sunset clouds, starlight crowns, and an empire ruled by love.",
   emoji: "👑",
+  category: "adventure-fantasy",
+  synopsis:
+    "Above sunset clouds and emerald ocean islands, {A} and {B} rule an enchanted sky kingdom. Upon dragon wings and amidst crystalline throne rooms, they discover that their greatest sovereignty is not land or jewels, but the unwavering devotion they offer one another.",
+  estimatedMinutes: 14,
   palette: ["#854d0e", "#facc15"],
   chapters: [
     "I. The Floating Citadel",

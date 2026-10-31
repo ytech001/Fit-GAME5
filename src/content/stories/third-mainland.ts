@@ -3,192 +3,233 @@ import type { Story } from "./types";
 export const thirdMainland: Story = {
   id: "third-mainland",
   title: "Third Mainland Hearts",
-  tagline: "Two strangers, one danfo, and a city that refuses to slow down.",
+  tagline: "Two strangers, one yellow danfo, broken engines, and a city that refuses to stop beating.",
   emoji: "🌆",
+  category: "our-love",
+  synopsis:
+    "Rush hour at Obalende is a whirlwind of hawkers and blaring horns. When {A} lunges to save {B}'s towering cake box in a crowded bus, a finger lands in the red velvet frosting—sparking a serendipitous journey across Third Mainland Bridge, an island pop-up stall, and a romance as resilient as Lagos itself.",
+  estimatedMinutes: 14,
   palette: ["#f08a5d", "#6f63d9"],
-  chapters: ["The Danfo", "Island Lights", "Before the Rain"],
+  chapters: [
+    "I. The Danfo & The Red Velvet",
+    "II. Sunset on the Long Bridge",
+    "III. The Mango Tree Pop-Up",
+    "IV. Midnight by the Lagoon",
+  ],
   start: "start",
   nodes: {
     start: {
       chapter: 0,
       scene: "city-night",
       text: [
-        "Obalende at six in the evening is a symphony nobody rehearsed. Conductors sing destinations, hawkers balance whole shops on their heads, and somewhere a generator coughs like an old uncle.",
-        "{A} squeezes into the last danfo for Lekki. The only free seat is beside {B}, who is guarding a tall white box tied with ribbon as if it holds state secrets.",
-        "The bus lurches. The box tilts. Time slows down the way it only does in films and in moments you'll retell for years.",
+        "Obalende at six on a Friday evening is a symphony of raw, electric human energy. Yellow danfo buses roar in plumes of diesel, hawkers balance towering glass trays of plantain chips on their heads, and conductors lean half out of sliding doors shouting: *'Lekki-Ajah straight! One chance enter with your fifty naira change!'*",
+        "{A} squeezes through the clamoring crowd and grabs the last open seat on a bus heading to the Island. The seat is beside {B}, who is sitting with rigid posture, guarding an enormous white pastry box tied with a satin rose-gold ribbon as if it contains the crown jewels.",
+        "Without warning, a reckless okada cuts in front of the bus. The driver slams the brakes with a screech that shakes the chassis. The danfo lurches forward violently—and the cake box slips from {B}'s hands, tumbling straight toward the grimy floor!",
       ],
       choices: [
-        { label: "Catch the box", to: "catch" },
-        { label: "Make a joke about Lagos traffic", to: "joke" },
+        { label: "Dive forward with both hands and catch the box in midair", to: "catch-box" },
+        { label: "Shield {B} with your arm and steady the box against your chest", to: "shield-box" },
       ],
     },
-    catch: {
+    "catch-box": {
       chapter: 0,
       scene: "city-night",
       text: [
-        "{A} catches it with both hands — and one thumb lands straight in the frosting.",
-        "{B} stares, then bursts out laughing. \"That's a red velvet you just fingerprinted,\" they say, offering a napkin and, after a pause, a puff-puff from a paper bag. \"Compensation.\"",
-        "{B} is a baker, it turns out, heading to their very first pop-up stall on the Island. Their hands are a little shaky. Not from the bus.",
+        "{A} reacts with lightning reflexes, scooping both hands beneath the falling box just inches before impact. But momentum carries {A}'s right thumb straight through the decorative cardboard opening—landing squarely into a swirl of velvety cream cheese frosting.",
+        "{B} freezes, eyes wide. For three unbearable seconds, silence hangs between them. Then, looking at {A}'s bewildered face and frosting-coated thumb, {B} bursts into a laugh so bright and musical that half the passengers turn around to smile.",
+        "\"That was a signature Red Velvet with vanilla bean cream you just fingerprinted!\" {B} laughs, reaching into a tote bag to produce a packet of wipes and a warm, golden puff-puff from a paper bag. \"Here—hazard compensation for our emergency rescue officer.\"",
       ],
       choices: [
-        { label: "Ask about the pop-up", to: "popup" },
-        { label: "Offer to help carry the boxes", to: "carry" },
+        { label: "Lick the frosting off your thumb with a playful grin and accept the puff-puff", to: "danfo-banter" },
+        { label: "Wipe your hand and ask what grand occasion requires such an elaborate cake", to: "danfo-banter" },
       ],
     },
-    joke: {
+    "shield-box": {
       chapter: 0,
-      scene: "bridge",
-      text: [
-        "\"At this speed,\" {A} says, \"we'll reach Lekki in time for our grandchildren's wedding.\"",
-        "The conductor hears, laughs, and repeats it to the whole bus. Even the stern woman in front cracks a smile. {B} snorts so hard the box rattles.",
-        "Then, right in the middle of Third Mainland Bridge, the engine gives one long sigh and stops. The lagoon glitters gold on both sides. Everyone groans. {B} looks at {A} and shrugs.",
-      ],
-      choices: [
-        { label: "Walk the bridge together at sunset", to: "bridgewalk" },
-        { label: "Wait it out and trade stories", to: "stories" },
-      ],
-    },
-    popup: {
-      chapter: 1,
-      scene: "market",
-      text: [
-        "\"It's tiny,\" {B} says, which is what people say about things that are enormous to them. \"Six tables, fairy lights, and my aunt's recipe for coconut bread.\"",
-        "By the time the danfo reaches the Island, {A} knows the names of every cake, the story behind the aunt, and that {B} hums when they're nervous.",
-        "\"You should come,\" {B} says, already looking away like they didn't just say it. \"Later. If you want.\"",
-      ],
-      choices: [
-        { label: "Show up early to help", to: "help" },
-        { label: "Arrive later — with flowers", to: "flowers" },
-      ],
-    },
-    carry: {
-      chapter: 1,
-      scene: "market",
-      text: [
-        "There are, it turns out, four more boxes stacked under the seat. {A} carries two, {B} carries two, and together they stagger off the bus like a very sweet delivery company.",
-        "The pop-up is a strip of tables under a mango tree. Nothing is set up. The fairy lights are a tangled nest. {B} looks at the chaos and then at {A}, hopeful.",
-      ],
-      choices: [
-        { label: "Roll up your sleeves and stay", to: "help" },
-        { label: "Promise to come back with reinforcements", to: "flowers" },
-      ],
-    },
-    bridgewalk: {
-      chapter: 1,
-      scene: "bridge",
-      text: [
-        "They climb out and walk along the bridge, the wind tugging at their clothes. Below, fishermen pull nets from water the colour of melted brass.",
-        "{B} admits they want to open a bakery one day, a real one, with a blue door. {A} admits something they've never said aloud either.",
-        "The sun sits fat and orange on the horizon, like it's waiting for them to finish.",
-      ],
-      choices: [
-        { label: "Take a photo of the sunset together", to: "photo" },
-        { label: "Race each other to the end of the bridge", to: "race" },
-      ],
-    },
-    stories: {
-      chapter: 1,
       scene: "city-night",
       text: [
-        "Stuck in the bus, the passengers become a little village. The stern woman shares groundnuts. The conductor tells a story about a goat that once rode to Ikorodu.",
-        "{A} and {B} trade the worst dates they've ever been on. {B} wins, unfortunately, with a story involving a pastor, a parrot and a power outage.",
-        "When the engine finally roars back, nobody cheers louder than the two of them — and nobody looks more disappointed, either.",
-      ],
-      choices: [{ label: "Get off at the same stop, on purpose", to: "samestop" }],
-    },
-    help: {
-      chapter: 1,
-      scene: "market",
-      text: [
-        "The generator dies twenty minutes before opening. {A} kneels beside it, coaxes it back to life with a hairpin and sheer stubbornness, and the fairy lights blink on like applause.",
-        "The crowd arrives. The coconut bread sells out in an hour. {B} keeps glancing over, cheeks dusted with flour, mouthing thank you between customers.",
-        "When the last table is folded, the sky has turned purple and heavy.",
-      ],
-      choices: [{ label: "Walk them home", to: "rain" }],
-    },
-    flowers: {
-      chapter: 1,
-      scene: "market",
-      text: [
-        "{A} arrives as the stall is closing, holding sunflowers bought from a boy at a traffic light. Everything is sold out.",
-        "{B} reaches under the table and produces one small coconut loaf wrapped in paper. \"I saved it,\" they say. \"Just in case you came.\"",
-        "Thunder rolls somewhere over the lagoon, deep and patient.",
-      ],
-      choices: [{ label: "Share the loaf on the walk home", to: "rain" }],
-    },
-    photo: {
-      chapter: 1,
-      scene: "bridge",
-      text: [
-        "They squeeze into one frame, the sun behind them. The photo is blurry, half of {A}'s face is cut off, and it is somehow perfect.",
-        "\"Send it to me,\" {B} says. Which means numbers are exchanged. Which means this is not the end of anything.",
-        "By the time they reach the Island the first heavy raindrops are falling.",
-      ],
-      choices: [{ label: "Run for shelter", to: "rain" }],
-    },
-    race: {
-      chapter: 2,
-      scene: "bridge",
-      text: [
-        "\"Last one to the end buys suya!\" {A} shouts, and they're off — dodging okadas, leaping puddles, laughing so hard they can barely breathe.",
-        "They tie. Obviously they tie. A suya man at the foot of the bridge, who has watched the whole thing, simply hands them two sticks and says, \"For the athletes.\"",
-        "Years later, they still argue about who actually won.",
-      ],
-      ending: { id: "sprinters", title: "The Bridge Sprinters", mood: "funny" },
-    },
-    samestop: {
-      chapter: 2,
-      scene: "city-night",
-      text: [
-        "\"This is my stop,\" {A} says, standing up. \"This is my stop too,\" {B} says, which is obviously a lie, because {B} was going to Ajah.",
-        "They step down together into a street smelling of roasting corn. Neither says anything about the lie.",
-        "Above them, the sky is gathering itself for a downpour.",
-      ],
-      choices: [{ label: "Find somewhere to wait out the weather", to: "rain" }],
-    },
-    rain: {
-      chapter: 2,
-      scene: "rain",
-      text: [
-        "Lagos rain doesn't fall; it arrives. Within seconds the street is a river and the two of them are pressed under the awning of a mama put, the smell of pepper soup curling around them.",
-        "{B}'s shoulder is warm against {A}'s. The rain is so loud it feels private, like the city has drawn a curtain just for them.",
-        "Something needs to be said. Or done. Or carefully not said at all.",
+        "{A} throws an arm around the box and braces against the front seat, trapping the pastry safely against {B}'s lap while cushioning them from the sudden jolt.",
+        "{B} lets out a long breath of relief, clutching the box tight. \"Oh thank heaven! If that cake fell, my entire career would have been cancelled before it even started.\"",
+        "\"My reflexes are at your service,\" {A} grins, checking that {B} is unharmed. \"What is inside this top-secret package that requires presidential-level protection?\"",
       ],
       choices: [
-        { label: "Confess you want to see them again", to: "confess" },
-        { label: "Pull them out to dance in the rain", to: "dance" },
-        { label: "Say goodnight, and hope", to: "hope" },
+        { label: "Listen to the story of {B}'s big dream pop-up stall", to: "danfo-banter" },
       ],
     },
-    confess: {
-      chapter: 2,
-      scene: "home",
+    "danfo-banter": {
+      chapter: 0,
+      scene: "city-night",
       text: [
-        "\"I'd like to take the same bus tomorrow,\" {A} says. \"And the day after. If you're on it.\"",
-        "{B} is quiet long enough for {A}'s heart to sink — then laughs softly. \"I don't even take that bus. I took it today because the other one was full.\" A pause. \"I'll take it tomorrow.\"",
-        "They did. For a very long time.",
+        "\"I'm a baker,\" {B} explains, their cheeks flushed with excitement and nervous adrenaline. \"Tonight is my very first solo dessert pop-up at a night market in Victoria Island. Six tables, fairy lights, and twelve cakes baked from my late grandmother's secret recipes.\"",
+        "{B}'s hands tremble slightly as they adjust the ribbon. \"I've been preparing for this for six months. I feel like my heart is running a marathon.\"",
+        "{A} looks at {B}—the passion burning in their eyes, the flour smudge on the cuff of their denim jacket, the earnest vulnerability in their voice. A spark ignites between them that has nothing to do with Lagos traffic.",
+        "\"You're going to amaze them,\" {A} says softly, with a certainty that catches {B} off guard.",
       ],
-      ending: { id: "same-bus", title: "Same Bus Tomorrow", mood: "sweet" },
+      choices: [
+        { label: "The engine sputters: prepare for the Long Bridge surprise", to: "bridge-breakdown" },
+      ],
     },
-    dance: {
-      chapter: 2,
-      scene: "rain",
+    "bridge-breakdown": {
+      chapter: 1,
+      scene: "bridge",
       text: [
-        "{A} holds out a hand. {B} looks at it, at the flooding street, at {A} — and takes it.",
-        "They dance badly and joyfully in the warm rain while the mama put cheers and a passing danfo honks its approval. Someone's radio is playing highlife. It's the right song.",
-        "Soaked to the bone, breathless, {B} says, \"You're trouble.\" {A} says, \"Only the good kind.\" They are both right.",
+        "Right in the center of Third Mainland Bridge, surrounded by miles of shimmering lagoon water, the bus engine gives one long, shuddering metallic sigh and dies completely.",
+        "The driver pumps the pedal. Silence. The conductor slaps the dashboard. Nothing. A collective groan rises from the passengers: *'Ah! Danfo don cast!'*",
+        "Outside, the evening sky is transforming into a blazing canvas of liquid gold, fiery orange, and deep purple. The cool sea breeze sweeps through the open windows, smelling of salty water and freedom.",
+        "{B} checks their watch with a quiet gasp of panic: \"The market opens in an hour!\"",
       ],
-      ending: { id: "rain-dance", title: "Rain on the Island", mood: "epic" },
+      choices: [
+        { label: "\"Come on—let's step outside and walk the bridge together\"", to: "bridge-walk" },
+        { label: "\"Don't worry, I'm calling an island dispatch ride right now\"", to: "dispatch-ride" },
+      ],
     },
-    hope: {
+    "bridge-walk": {
+      chapter: 1,
+      scene: "bridge",
+      text: [
+        "They step out of the stalled bus onto the pedestrian walk of the bridge. Above them, seagulls swoop through the glowing golden hour; below, local fishing canoes glide silently across water that looks like melted bronze.",
+        "{A} takes the heaviest boxes from {B}, carrying them with ease. As they walk side by side along the endless bridge, the noise of the traffic jams fades into a distant hum.",
+        "They start talking—really talking. About where they grew up, the songs that make them cry, the ambitions that keep them awake at night. {B} tells {A} about wanting to open a real storefront with blue French doors; {A} shares a secret goal they've never told another living soul.",
+        "{B} pauses by the railing, the golden sunset illuminating their face like an angel in a painting. \"I'm glad the bus broke down,\" {B} whispers softly.",
+      ],
+      choices: [
+        { label: "Take a sunset portrait together with the lagoon behind you", to: "bridge-photo" },
+        { label: "Look into {B}'s eyes and tell them they look breathtaking", to: "bridge-compliment" },
+      ],
+    },
+    "dispatch-ride": {
+      chapter: 1,
+      scene: "bridge",
+      text: [
+        "Within ten minutes, {A} manages to hail a friendly private van whose driver agrees to take them straight across the bridge to Victoria Island.",
+        "Inside the air-conditioned van, the atmosphere is quiet and intimate. As the bridge glides past the window, {B} leans over and offers {A} a taste of a homemade passionfruit tart from a small container.",
+        "\"Open your mouth,\" {B} commands playfully.",
+        "The pastry is crisp, sweet, and bursting with citrus warmth. As {A} closes their eyes in genuine delight, {B} smiles with deep pride, their knee brushing against {A}'s in the quiet backseat.",
+      ],
+      choices: [
+        { label: "Arrive at the night market in Victoria Island", to: "market-arrival" },
+      ],
+    },
+    "bridge-photo": {
+      chapter: 1,
+      scene: "bridge",
+      text: [
+        "{A} pulls out their phone. They lean in shoulder to shoulder, {B}'s soft curls brushing against {A}'s cheek, smiling into the lens with the vast, glorious lagoon glowing behind them.",
+        "In that photo, they don't look like two strangers who met forty minutes ago. They look like two people who have been searching for each other their entire lives.",
+      ],
+      choices: [
+        { label: "Catch a ride to the Victoria Island night market", to: "market-arrival" },
+      ],
+    },
+    "bridge-compliment": {
+      chapter: 1,
+      scene: "bridge",
+      text: [
+        "{A} stops, turning to face {B}. \"The sunset is fighting for second place right now. You are stunning, {B}.\"",
+        "{B}'s breath catches. A flush of pink creeps across their cheekbones, and for a moment, neither of them moves. The wind ruffles their clothes, and the space between their hands feels electric.",
+      ],
+      choices: [
+        { label: "Walk on together with intertwined fingers", to: "market-arrival" },
+      ],
+    },
+    "market-arrival": {
       chapter: 2,
+      scene: "market",
+      text: [
+        "They arrive at the outdoor night market in Victoria Island just as twilight deepens to indigo. The market is nestled beneath ancient mango trees strung with hundreds of warm Edison fairy lights.",
+        "Live jazz guitar floats through the warm air, and crowds of chic Lagosians are already strolling along the paved pathways.",
+        "When they reach {B}'s assigned corner, {B} gasps in horror: the display table is bare, the fairy lights are a tangled nest on the ground, and the chalkboard menu is blank. \"My assistant had an emergency and couldn't make it! How am I going to do this alone?\"",
+        "{A} calmly rolls up their sleeves with a confident grin. \"Who said you're alone? You have your Chief Operations Officer right here.\"",
+      ],
+      choices: [
+        { label: "Untangle the lights and set up the cake display with artistic flair", to: "market-setup" },
+        { label: "Grab the chalk and write poetic, mouthwatering descriptions for every cake", to: "market-setup" },
+      ],
+    },
+    "market-setup": {
+      chapter: 2,
+      scene: "market",
+      text: [
+        "For thirty minutes, they move in complete harmony. {A} untangles the warm lights and drapes them around the wooden canopy, while {B} arranges the cakes on tiered ceramic stands.",
+        "{A} writes the menu board in bold lettering: *'Grandma's Secret Recipes — Baked with Love & A Pinch of Lagos Magic.'*",
+        "When the clock strikes eight, the stall looks like a dream from a storybook. The red velvet cake with {A}'s thumbprint is christened the *'Hero's Velvet'*, and within ten minutes, a line of eager customers begins to form.",
+        "Throughout the evening, {A} handles the box-tying and payments while {B} serves slices with radiant, glowing charm. Every time their hands brush while exchanging boxes, a jolt of warmth shoots through them.",
+      ],
+      choices: [
+        { label: "Celebrate the final sold-out cake as the market winds down", to: "market-success" },
+      ],
+    },
+    "market-success": {
+      chapter: 2,
+      scene: "market",
+      text: [
+        "By 11:30 P.M., every single crumb has been sold. The cake platters are clean, and {B}'s cash box and digital transfers are overflowing.",
+        "{B} stands behind the empty counter, exhausted, glowing, and looking at {A} with an expression of pure, unadulterated gratitude.",
+        "\"I couldn't have done this without you,\" {B} says, stepping out from behind the stall. \"You turned what could have been a disaster into the best night of my life.\"",
+        "\"I just wanted to see you shine,\" {A} replies honestly. \"And you outshone the whole city.\"",
+      ],
+      choices: [
+        { label: "Escape to the quiet waterfront promenade for midnight air", to: "lagoon-midnight" },
+      ],
+    },
+    "lagoon-midnight": {
+      chapter: 3,
+      scene: "city-night",
+      text: [
+        "With the stall packed away, they walk out toward the quiet waterfront promenade overlooking the calm waters of Five Cowries Creek.",
+        "The city's skyscrapers shimmer in shades of amber and neon across the water. A cool midnight breeze rustles the palms, and the only sound is the gentle lap of the tide against the seawall.",
+        "They sit on a stone bench under a lamppost, sharing the very last single slice of Red Velvet cake with two wooden forks.",
+        "{B} takes a bite, then looks at {A}. \"You know... at Obalende, when you caught that box, I thought you were just a kind stranger. Now I don't think you're a stranger at all.\"",
+      ],
+      choices: [
+        { label: "Take {B}'s hand and ask to see them again tomorrow", to: "ending-tomorrow" },
+        { label: "Lean in and kiss {B} beneath the city lights", to: "ending-first-kiss" },
+        { label: "Make a pinky promise to be each other's forever teammate", to: "ending-teammates" },
+      ],
+    },
+    "ending-tomorrow": {
+      chapter: 3,
+      scene: "city-night",
+      text: [
+        "{A} takes {B}'s hand, lacing their fingers together. \"I don't believe in coincidences anymore, {B}. Danfo breakdown, Third Mainland sunset, mango trees... I was meant to find you today.\"",
+        "{B} smiles, leaning their head against {A}'s shoulder. \"So what happens next?\"",
+        "\"Tomorrow morning. Breakfast. I'll pick you up, and this time, no broken buses—just you and me.\"",
+        "\"Deal,\" {B} whispers softly. \"You have a date with the baker every day from now on.\"",
+      ],
+      ending: {
+        id: "date-with-the-baker",
+        title: "A Date with the Baker",
+        mood: "sweet",
+      },
+    },
+    "ending-first-kiss": {
+      chapter: 3,
+      scene: "city-night",
+      text: [
+        "{A} sets the cake container down, turns to {B}, and gently cradles their face with both hands. {B}'s eyes flutter shut in quiet anticipation.",
+        "When their lips meet, the entire bustling city of twenty million people disappears into pure, breathless silence. The kiss is sweet, slow, and filled with the promise of everything yet to come.",
+        "When they finally part, {B} rests their forehead against {A}'s, laughing softly against their lips. \"Best red velvet frosting ever.\"",
+        "\"The best everything,\" {A} whispers back, holding {B} tight against the night breeze.",
+      ],
+      ending: {
+        id: "midnight-creek-kiss",
+        title: "Midnight on Five Cowries Creek",
+        mood: "sweet",
+      },
+    },
+    "ending-teammates": {
+      chapter: 3,
       scene: "stars",
       text: [
-        "When the rain eases, they say goodnight. No numbers. Just a long look, and the feeling of a door left open.",
-        "Two weeks later, {A} buys coconut bread from a new bakery with a blue door. Taped inside the paper is a note: \"I was hoping it'd be you. — {B}\"",
-        "Some stories take the long road. That's alright. Lagos is full of long roads.",
+        "{B} holds up their pinky finger with a playful, solemn look. \"Promise me that whenever one of our cakes falls, the other will always be there to catch it.\"",
+        "{A} links their pinky firmly around {B}'s, pulling their hands to their chest. \"I promise. In traffic, in success, in storms, and in peace. We are a team now.\"",
+        "They sit together under the stars until 2 A.M., planning recipes, sharing dreams, and knowing with absolute certainty that their story had just begun.",
       ],
-      ending: { id: "blue-door", title: "The Blue Door", mood: "bittersweet" },
+      ending: {
+        id: "unbreakable-team",
+        title: "The Unbreakable Team",
+        mood: "sweet",
+      },
     },
   },
 };

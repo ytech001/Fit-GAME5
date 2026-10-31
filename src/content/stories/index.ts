@@ -1,35 +1,72 @@
+import { acrossOceans } from "./across-oceans";
+import { candlelitReunion } from "./candlelit-reunion";
+import { cityAfterMidnight } from "./city-after-midnight";
+import { comfortInYourArms } from "./comfort-in-your-arms";
 import { constellationOfUs } from "./constellation-of-us";
 import { crownAndKingdom } from "./crown-and-kingdom";
+import { fallingAsleepOnCall } from "./falling-asleep-on-call";
 import { futureTense } from "./future-tense";
+import { guardedHearts } from "./guarded-hearts";
+import { islandOfWhispers } from "./island-of-whispers";
 import { lagosToDelta } from "./lagos-to-delta";
 import { lanternRealm } from "./lantern-realm";
 import { marketHeist } from "./market-heist";
+import { midnightExpress } from "./midnight-express";
 import { midnightLekki } from "./midnight-lekki";
+import { ourFirstAnniversary } from "./our-first-anniversary";
 import { parisInterlude } from "./paris-interlude";
 import { perfectDay } from "./perfect-day";
 import { rainySunday } from "./rainy-sunday";
+import { shadowsAndSilk } from "./shadows-and-silk";
 import { starlitLagoon } from "./starlit-lagoon";
+import { surpriseProposal } from "./surprise-proposal";
+import { theDisagreement } from "./the-disagreement";
+import { theFirstUnforgettableDate } from "./the-first-unforgettable-date";
 import { thirdMainland } from "./third-mainland";
 import { thousandLetters } from "./thousand-letters";
 import type { Story } from "./types";
 
-export type { Story, StoryNode, SceneKey } from "./types";
+export type { Story, StoryNode, SceneKey, StoryCategory } from "./types";
 
-// Register all couple stories here.
+// Register all couple stories here across all categories.
 export const STORIES: Story[] = [
-  lagosToDelta,
-  midnightLekki,
-  rainySunday,
-  starlitLagoon,
-  thousandLetters,
-  crownAndKingdom,
-  parisInterlude,
-  marketHeist,
-  futureTense,
-  constellationOfUs,
-  thirdMainland,
-  lanternRealm,
+  // Just You & Me
   perfectDay,
+  futureTense,
+  midnightLekki,
+  fallingAsleepOnCall,
+  cityAfterMidnight,
+
+  // Our Love Stories
+  theFirstUnforgettableDate,
+  ourFirstAnniversary,
+  surpriseProposal,
+  thirdMainland,
+  marketHeist,
+
+  // Deep Emotional Romance
+  theDisagreement,
+  acrossOceans,
+  comfortInYourArms,
+  thousandLetters,
+  constellationOfUs,
+
+  // Dark Romance
+  shadowsAndSilk,
+  guardedHearts,
+
+  // Sensual Romance
+  candlelitReunion,
+  rainySunday,
+  parisInterlude,
+  starlitLagoon,
+
+  // Adventure & Fantasy Romance
+  islandOfWhispers,
+  midnightExpress,
+  lanternRealm,
+  crownAndKingdom,
+  lagosToDelta,
 ];
 
 export function getStory(id: string) {

@@ -5,6 +5,10 @@ export const thousandLetters: Story = {
   title: "The Book of 100 Love Letters",
   tagline: "A trail of wax-sealed envelopes, handwritten memories, and a hidden treasure meant only for her.",
   emoji: "💌",
+  category: "deep-emotional",
+  synopsis:
+    "{B} wakes up to a crimson wax-sealed envelope resting on her pillow. What follows is a romantic scavenger hunt across secret corners of their life, each envelope containing a handwritten memory, culminating in a locked vintage chest holding Letter Number 100.",
+  estimatedMinutes: 15,
   palette: ["#701a75", "#f472b6"],
   chapters: [
     "I. The First Envelope",

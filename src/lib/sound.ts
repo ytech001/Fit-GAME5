@@ -126,3 +126,97 @@ export function stopRing() {
   if (ringTimer) clearInterval(ringTimer);
   ringTimer = null;
 }
+
+export type StoryAmbienceKind = "piano" | "rain" | "starlight" | "candlelight";
+
+let ambientTimer: ReturnType<typeof setInterval> | null = null;
+let currentAmbient: StoryAmbienceKind | null = null;
+let ambientGain = 0.035;
+
+export const storyAmbient = {
+  get current() {
+    return currentAmbient;
+  },
+  isPlaying() {
+    return Boolean(currentAmbient && ambientTimer);
+  },
+  setVolume(vol: number) {
+    ambientGain = Math.max(0, Math.min(1, vol)) * 0.05;
+  },
+  start(kind: StoryAmbienceKind) {
+    this.stop();
+    if (!enabled) return;
+    currentAmbient = kind;
+    const a = audio();
+    if (!a) return;
+
+    if (kind === "piano") {
+      const chords = [
+        [60, 64, 67, 71],
+        [57, 60, 64, 67],
+        [53, 57, 60, 64],
+        [55, 59, 62, 67],
+      ];
+      let step = 0;
+      const playBar = () => {
+        if (!enabled || currentAmbient !== "piano") return storyAmbient.stop();
+        const ch = chords[step++ % chords.length];
+        tone(midi(ch[0] - 12), 0, 3.2, ambientGain * 0.8, "sine");
+        tone(midi(ch[1]), 0.4, 2.4, ambientGain * 0.6, "triangle");
+        tone(midi(ch[2]), 0.8, 2.2, ambientGain * 0.5, "triangle");
+        tone(midi(ch[3] + 12), 1.2, 2.8, ambientGain * 0.45, "triangle");
+      };
+      playBar();
+      ambientTimer = setInterval(playBar, 3200);
+    } else if (kind === "rain") {
+      const playRain = () => {
+        if (!enabled || currentAmbient !== "rain") return storyAmbient.stop();
+        // Soft pitter-patter of drops
+        for (let i = 0; i < 6; i++) {
+          const delay = Math.random() * 0.9;
+          tone(2200 + Math.random() * 1200, delay, 0.04, ambientGain * 0.15, "square");
+        }
+        // Low distant rumble occasionally
+        if (Math.random() < 0.25) {
+          tone(55 + Math.random() * 20, 0, 1.4, ambientGain * 0.4, "sine");
+        }
+      };
+      playRain();
+      ambientTimer = setInterval(playRain, 900);
+    } else if (kind === "starlight") {
+      const notes = [72, 76, 79, 83, 84, 88, 91];
+      let idx = 0;
+      const playStars = () => {
+        if (!enabled || currentAmbient !== "starlight") return storyAmbient.stop();
+        const n = notes[idx++ % notes.length];
+        tone(midi(n), 0, 1.8, ambientGain * 0.4, "triangle");
+        tone(midi(n + 7), 0.35, 1.5, ambientGain * 0.25, "sine");
+      };
+      playStars();
+      ambientTimer = setInterval(playStars, 1200);
+    } else if (kind === "candlelight") {
+      const chords = [
+        [62, 65, 69, 72],
+        [60, 64, 67, 71],
+        [58, 62, 65, 69],
+        [57, 61, 64, 67],
+      ];
+      let step = 0;
+      const playCandle = () => {
+        if (!enabled || currentAmbient !== "candlelight") return storyAmbient.stop();
+        const ch = chords[step++ % chords.length];
+        tone(midi(ch[0] - 12), 0, 3.6, ambientGain * 0.85, "sine");
+        tone(midi(ch[1]), 0.6, 2.8, ambientGain * 0.5, "triangle");
+        tone(midi(ch[2]), 1.2, 2.4, ambientGain * 0.5, "triangle");
+        tone(midi(ch[3]), 1.8, 2.6, ambientGain * 0.45, "sine");
+      };
+      playCandle();
+      ambientTimer = setInterval(playCandle, 3600);
+    }
+  },
+  stop() {
+    if (ambientTimer) clearInterval(ambientTimer);
+    ambientTimer = null;
+    currentAmbient = null;
+  },
+};

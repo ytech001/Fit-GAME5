@@ -13,7 +13,7 @@ export function StoryScene({ scene, palette, className }: { scene: SceneKey; pal
         </linearGradient>
       </defs>
       <rect width="400" height="200" fill={`url(#${id})`} />
-      {(scene === "stars" || scene === "sky" || scene === "dragon" || scene === "city-night") &&
+      {(scene === "stars" || scene === "sky" || scene === "dragon" || scene === "city-night" || scene === "rooftop" || scene === "balcony" || scene === "manor") &&
         Array.from({ length: 26 }, (_, i) => <circle key={i} cx={(i * 97) % 400} cy={(i * 53) % 120} r={i % 4 === 0 ? 1.6 : 0.9} fill="#fff8e6" opacity={0.5 + (i % 3) * 0.2} />)}
       {scene === "city-night" && (
         <g>
@@ -153,6 +153,99 @@ export function StoryScene({ scene, palette, className }: { scene: SceneKey; pal
           <path d="M0 170q100-30 200-10t200-10v50H0z" fill="#1a1338" />
           <circle cx="300" cy="60" r="20" fill="#fff3d1" />
           <circle cx="292" cy="54" r="20" fill={b} />
+        </g>
+      )}
+      {scene === "train" && (
+        <g>
+          <rect x="0" y="0" width="400" height="120" fill="#0f172a" opacity="0.4" />
+          <path d="M0 110l120-40 100 25 180-50v95H0z" fill="#1e293b" opacity="0.7" />
+          <rect x="0" y="135" width="400" height="65" fill="#334155" />
+          <rect x="0" y="128" width="400" height="7" fill="#fbbf24" />
+          {Array.from({ length: 5 }, (_, i) => (
+            <g key={i}>
+              <rect x={20 + i * 78} y="142" width="56" height="34" rx="4" fill="#fef08a" opacity="0.85" />
+              <rect x={24 + i * 78} y="146" width="22" height="26" fill="#1e293b" opacity="0.25" />
+              <rect x={50 + i * 78} y="146" width="22" height="26" fill="#1e293b" opacity="0.25" />
+            </g>
+          ))}
+          <line x1="0" y1="188" x2="400" y2="188" stroke="#0f172a" strokeWidth="4" />
+        </g>
+      )}
+      {scene === "candlelight" && (
+        <g>
+          <rect x="0" y="140" width="400" height="60" fill="#1c1917" />
+          <ellipse cx="200" cy="142" rx="140" ry="12" fill="#292524" />
+          {/* Candelabra */}
+          <rect x="198" y="100" width="4" height="42" fill="#d97706" />
+          <path d="M175 114c0 14 23 14 23 14s23 0 23-14" stroke="#d97706" strokeWidth="3" fill="none" />
+          {[175, 200, 225].map((x, i) => (
+            <g key={i}>
+              <rect x={x - 2} y="90" width="4" height="18" fill="#fef3c7" />
+              <ellipse cx={x} cy="86" rx="4" ry="7" fill="#f59e0b" opacity="0.9" />
+              <ellipse cx={x} cy="87" rx="2" ry="4" fill="#fffbeb" />
+              <circle cx={x} cy="86" r="16" fill="#fbbf24" opacity="0.18" />
+            </g>
+          ))}
+          {/* Wine glasses */}
+          <path d="M120 128q10 16 10 20h-6v4h12v-4h-6q0-4 10-20z" fill="#f43f5e" opacity="0.75" />
+          <path d="M280 128q10 16 10 20h-6v4h12v-4h-6q0-4 10-20z" fill="#f43f5e" opacity="0.75" />
+        </g>
+      )}
+      {scene === "island" && (
+        <g>
+          <circle cx="200" cy="65" r="30" fill="#fef08a" opacity="0.85" />
+          <path d="M0 115q100-14 200 4t200-4v85H0z" fill="#0284c7" opacity="0.7" />
+          <path d="M0 140q120 20 250-10t150 15v55H0z" fill="#0ea5e9" />
+          {/* Sand dune / island */}
+          <ellipse cx="80" cy="165" rx="70" ry="24" fill="#fde047" />
+          {/* Palm trees */}
+          <path d="M60 160c5-35 25-50 40-65" stroke="#78350f" strokeWidth="4" fill="none" />
+          <path d="M100 95c-15-8-25 0-30 10 12-4 22-2 30-10zM100 95c10-12 25-10 30-2-12 0-20 4-30 2zM100 95c-2-16 12-22 22-18-6 8-10 14-22 18z" fill="#15803d" />
+        </g>
+      )}
+      {scene === "manor" && (
+        <g>
+          <circle cx="320" cy="50" r="26" fill="#fef08a" opacity="0.6" />
+          {/* Gothic manor silhouettes */}
+          <path d="M70 200V120l35-40 35 40v80z" fill="#0f172a" />
+          <path d="M130 200V90l45-50 45 50v110z" fill="#090d16" />
+          <path d="M210 200V110l35-35 35 35v90z" fill="#0f172a" />
+          {/* Arched windows */}
+          <path d="M165 110a10 10 0 0 1 20 0v25h-20z" fill="#fbbf24" opacity="0.85" />
+          <path d="M95 140a7 7 0 0 1 14 0v16h-14z" fill="#fbbf24" opacity="0.6" />
+          <path d="M235 140a7 7 0 0 1 14 0v16h-14z" fill="#fbbf24" opacity="0.6" />
+          {/* Mist */}
+          <ellipse cx="200" cy="190" rx="190" ry="16" fill="#cbd5e1" opacity="0.2" />
+        </g>
+      )}
+      {scene === "rooftop" && (
+        <g>
+          {/* City skyline glow */}
+          {[0, 45, 90, 140, 200, 260, 310, 360].map((x, i) => (
+            <rect key={x} x={x} y={80 + (i % 3) * 15} width={40} height={120} fill="#111827" />
+          ))}
+          {/* String lights */}
+          <path d="M20 50q180 35 360-10" stroke="#fef08a" strokeWidth="1.5" strokeDasharray="1 14" fill="none" opacity="0.9" />
+          {/* Rooftop ledge */}
+          <rect x="0" y="155" width="400" height="45" fill="#1f2937" />
+          <rect x="0" y="150" width="400" height="7" fill="#374151" />
+          {/* Soft cushions and lantern */}
+          <ellipse cx="280" cy="165" rx="35" ry="12" fill="#be185d" />
+          <ellipse cx="320" cy="168" rx="25" ry="10" fill="#9d174d" />
+          <rect x="120" y="135" width="16" height="22" rx="3" fill="#f59e0b" opacity="0.9" />
+          <circle cx="128" cy="146" r="14" fill="#fbbf24" opacity="0.25" />
+        </g>
+      )}
+      {scene === "balcony" && (
+        <g>
+          <circle cx="100" cy="60" r="26" fill="#fef3c7" opacity="0.8" />
+          <path d="M0 135q120-15 240 5t160-5v65H0z" fill="#1e1b4b" opacity="0.8" />
+          {/* Balcony railing */}
+          <rect x="0" y="145" width="400" height="10" fill="#312e81" />
+          {Array.from({ length: 16 }, (_, i) => (
+            <line key={i} x1={i * 26 + 8} y1="145" x2={i * 26 + 8} y2="200" stroke="#4338ca" strokeWidth="3" />
+          ))}
+          <rect x="0" y="190" width="400" height="10" fill="#1e1b4b" />
         </g>
       )}
     </svg>

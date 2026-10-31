@@ -5,6 +5,10 @@ export const constellationOfUs: Story = {
   title: "A Constellation Named After You",
   tagline: "3 A.M. rooftop breeze, an astronomical telescope, and an eternal star registered in her honor.",
   emoji: "✨",
+  category: "deep-emotional",
+  synopsis:
+    "At 3 A.M. when the world is quiet and still, {A} wakes {B} for an astronomical surprise on the rooftop. Beneath a brass telescope and vintage celestial charts, an eternal star registered in her name becomes a testament to a love that outshines galaxies.",
+  estimatedMinutes: 14,
   palette: ["#1e1b4b", "#818cf8"],
   chapters: [
     "I. The 3 A.M. Escape",

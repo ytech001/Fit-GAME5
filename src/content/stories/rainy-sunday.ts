@@ -5,6 +5,10 @@ export const rainySunday: Story = {
   title: "Rain on the Balcony & Warm Blankets",
   tagline: "A thunderstorm outside, soft music playing inside, and nowhere else in the world to be.",
   emoji: "🌧️",
+  category: "sensual-romance",
+  synopsis:
+    "A thunderstorm rattles the balcony glass outside while acoustic vinyl records play softly inside. Wrapped in thick duvets, brewing spicy ginger tea, cooking breakfast in socks, and slow dancing by the rain-streaked window—a tender celebration of domestic romance.",
+  estimatedMinutes: 18,
   palette: ["#1e293b", "#38bdf8"],
   chapters: [
     "I. The Storm Rolls In",

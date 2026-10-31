@@ -5,6 +5,10 @@ export const marketHeist: Story = {
   title: "The Great Balogun Fabric Adventure",
   tagline: "Haggling with market aunties, hunting for matching couple Ankara, and laughing until your stomach aches.",
   emoji: "🛍️",
+  category: "our-love",
+  synopsis:
+    "Armed with mission focus, designer sunglasses, and unmatched couple banter, {A} and {B} dive into the labyrinth of Balogun Market to find the holy grail of matching royal Ankara fabric. Negotiating with seasoned market aunties and feasting on golden puff-puff, they turn shopping into an epic love story.",
+  estimatedMinutes: 14,
   palette: ["#ea580c", "#fbbf24"],
   chapters: [
     "I. Into the Heart of Balogun",
