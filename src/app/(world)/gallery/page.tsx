@@ -2,7 +2,9 @@
 import { useCallback, useEffect, useState } from "react";
 import { VoicePlayer } from "@/components/chat/voice";
 import { PrivateImage } from "@/components/media/private-image";
+import { IconDownload } from "@/components/ui/icons";
 import { Button, EmptyState, ErrorNote, PageHeader, Tabs } from "@/components/ui/primitives";
+import { downloadMedia } from "@/lib/download";
 import { useSignedUrl } from "@/lib/signed-urls";
 import { db } from "@/lib/db/client";
 import { errorMessage, relativeTime } from "@/lib/utils";
@@ -139,11 +141,35 @@ function VideoThumbnail({ path, uploaderName, createdAt, onClick }: { path: stri
   );
 }
 
+
 function Viewer({ path, isVideo, onClose }: { path: string; isVideo?: boolean; onClose: () => void }) {
   const { url } = useSignedUrl(path);
   const isVid = isVideo || /\.(mp4|webm|mov)$/i.test(path);
+  const ext = isVid ? "mp4" : "jpg";
+  const filename = path.split("/").pop() || `justus-${isVid ? "video" : "photo"}-${Date.now()}.${ext}`;
+
   return (
-    <div className="fixed inset-0 z-[90] grid place-items-center bg-black/90 p-4" onClick={onClose} role="dialog" aria-label="Media preview">
+    <div className="fixed inset-0 z-[90] grid place-items-center bg-black/95 p-4" onClick={onClose} role="dialog" aria-label="Media preview">
+      <div className="absolute right-4 top-[max(1rem,env(safe-area-inset-top))] flex items-center gap-2 z-10" onClick={(e) => e.stopPropagation()}>
+        {url && (
+          <button
+            type="button"
+            onClick={() => downloadMedia(url, filename)}
+            className="flex h-11 items-center gap-2 rounded-full bg-white/20 px-4 text-sm font-semibold text-white backdrop-blur hover:bg-white/30 active:scale-95 transition"
+            aria-label="Download to phone"
+          >
+            <IconDownload size={18} />
+            <span>Download</span>
+          </button>
+        )}
+        <button
+          onClick={onClose}
+          className="flex h-11 w-11 items-center justify-center rounded-full bg-white/20 text-lg font-bold text-white backdrop-blur hover:bg-white/30 active:scale-95 transition"
+          aria-label="Close"
+        >
+          ✕
+        </button>
+      </div>
       {url && (isVid ? (
         <div className="relative max-h-full max-w-4xl w-full" onClick={(e) => e.stopPropagation()}>
           <video src={url} controls autoPlay playsInline className="max-h-[85vh] w-full rounded-xl object-contain bg-black shadow-2xl" />
@@ -152,9 +178,7 @@ function Viewer({ path, isVideo, onClose }: { path: string; isVideo?: boolean; o
         /* eslint-disable-next-line @next/next/no-img-element */
         <img src={url} alt="Shared photo, full size" className="max-h-full max-w-full rounded-xl object-contain" />
       ))}
-      <button className="absolute right-4 top-[max(1rem,env(safe-area-inset-top))] flex h-11 w-11 items-center justify-center rounded-full bg-white/15 text-lg font-bold text-white hover:bg-white/25" aria-label="Close">
-        ✕
-      </button>
     </div>
   );
 }
+

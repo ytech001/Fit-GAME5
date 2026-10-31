@@ -4,12 +4,13 @@ import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } fr
 import { MicButton, VoicePlayer, VoiceRecorder } from "@/components/chat/voice";
 import { Avatar } from "@/components/ui/avatar";
 import { useSendBurst } from "@/components/ui/bursts";
-import { IconGift, IconImage, IconReply, IconRetry, IconSend, IconStar, IconTrash } from "@/components/ui/icons";
+import { IconDownload, IconEdit, IconGift, IconImage, IconReply, IconRetry, IconSend, IconStar, IconTrash } from "@/components/ui/icons";
 import { EmptyState, ErrorNote, Sheet, Spinner } from "@/components/ui/primitives";
 import { toast } from "@/components/ui/toast";
 import { BURSTS, GIFTS } from "@/content/gifts";
 import { compressImage, validateMedia } from "@/lib/media";
-import { useSignedUrl } from "@/lib/signed-urls";
+import { downloadMedia } from "@/lib/download";
+import { signedUrl, useSignedUrl } from "@/lib/signed-urls";
 import { sfx } from "@/lib/sound";
 import { db, deleteMedia } from "@/lib/db/client";
 import type { Message } from "@/lib/types";
@@ -40,6 +41,7 @@ export function ChatView() {
   const [partnerRead, setPartnerRead] = useState<string | null>(null);
   const [typing, setTyping] = useState(false);
   const [replyTo, setReplyTo] = useState<Local | null>(null);
+  const [editingMessage, setEditingMessage] = useState<Local | null>(null);
   const [actionFor, setActionFor] = useState<Local | null>(null);
   const scroller = useRef<HTMLDivElement>(null);
   const topSentinel = useRef<HTMLDivElement>(null);
@@ -249,6 +251,22 @@ export function ChatView() {
     send({ kind: "image", _blob: blob, _localUrl: URL.createObjectURL(blob), media_meta: { width, height } });
   };
 
+  const saveEdit = useCallback(
+    async (id: string, newBody: string) => {
+      const trimmed = newBody.trim();
+      if (!trimmed) return;
+      setEditingMessage(null);
+      const { error } = await api.from("messages").update({ body: trimmed }).eq("id", id);
+      if (error) {
+        toast("Couldn't update message — try again.", "error");
+      } else {
+        setMessages((cur) => cur.map((m) => (m.id === id ? { ...m, body: trimmed } : m)));
+        toast("Message edited", "ok");
+      }
+    },
+    [api],
+  );
+
   const byId = useMemo(() => new Map(messages.map((x) => [x.id, x])), [messages]);
 
   return (
@@ -311,6 +329,9 @@ export function ChatView() {
         replyTo={replyTo}
         replyName={replyTo ? (replyTo.sender_id === me.id ? "yourself" : partner?.display_name ?? "") : ""}
         onCancelReply={() => setReplyTo(null)}
+        editingMessage={editingMessage}
+        onCancelEdit={() => setEditingMessage(null)}
+        onSaveEdit={saveEdit}
         onSendText={(body) => send({ kind: "text", body })}
         onSendVoice={(blob, ms) => send({ kind: "voice", _blob: blob, media_meta: { duration_ms: ms } })}
         onPickMedia={onPickMedia}
@@ -337,9 +358,37 @@ export function ChatView() {
               ))}
             </div>
             <div className="grid gap-1">
-              <SheetAction icon={<IconReply />} onClick={() => (setReplyTo(actionFor), setActionFor(null))}>
+              <SheetAction icon={<IconReply />} onClick={() => (setReplyTo(actionFor), setEditingMessage(null), setActionFor(null))}>
                 Reply
               </SheetAction>
+              {actionFor.sender_id === me.id && actionFor.kind === "text" && !actionFor.deleted_at && (
+                <SheetAction
+                  icon={<IconEdit />}
+                  onClick={() => {
+                    setEditingMessage(actionFor);
+                    setReplyTo(null);
+                    setActionFor(null);
+                  }}
+                >
+                  Edit message
+                </SheetAction>
+              )}
+              {(actionFor.kind === "image" || actionFor.kind === "video") && !actionFor.deleted_at && (
+                <SheetAction
+                  icon={<IconDownload />}
+                  onClick={async () => {
+                    const target = actionFor;
+                    setActionFor(null);
+                    const path = target.media_path;
+                    const targetUrl = path ? await signedUrl(path) : target._localUrl;
+                    if (!targetUrl) return toast("Media link unavailable", "error");
+                    const ext = target.kind === "video" ? "mp4" : "jpg";
+                    await downloadMedia(targetUrl, `justus-${target.kind}-${Date.now()}.${ext}`);
+                  }}
+                >
+                  Download {actionFor.kind === "video" ? "video" : "photo"}
+                </SheetAction>
+              )}
               <SheetAction
                 icon={<IconStar />}
                 onClick={() => {
@@ -664,10 +713,28 @@ function ChatImage({ msg }: { msg: Local }) {
         )}
       </span>
       {open && src && (
-        <span className="fixed inset-0 z-[90] grid place-items-center bg-black/90 p-4" onClick={() => setOpen(false)} role="dialog" aria-label="Photo">
+        <div className="fixed inset-0 z-[90] grid place-items-center bg-black/95 p-4" onClick={() => setOpen(false)} role="dialog" aria-label="Photo preview">
+          <div className="absolute right-4 top-[max(1rem,env(safe-area-inset-top))] flex items-center gap-2 z-10" onClick={(e) => e.stopPropagation()}>
+            <button
+              type="button"
+              onClick={() => downloadMedia(src, `justus-photo-${Date.now()}.jpg`)}
+              className="flex h-10 items-center gap-1.5 rounded-full bg-white/20 px-3.5 text-xs font-semibold text-white backdrop-blur hover:bg-white/30 active:scale-95 transition"
+              aria-label="Download photo"
+            >
+              <IconDownload size={16} />
+              <span>Download</span>
+            </button>
+            <button
+              onClick={() => setOpen(false)}
+              className="flex h-10 w-10 items-center justify-center rounded-full bg-white/20 text-base font-bold text-white backdrop-blur hover:bg-white/30 active:scale-95 transition"
+              aria-label="Close"
+            >
+              ✕
+            </button>
+          </div>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src={src} alt="Shared photo, full size" className="max-h-full max-w-full rounded-xl object-contain" />
-        </span>
+        </div>
       )}
     </>
   );
@@ -720,13 +787,24 @@ function ChatVideo({ msg }: { msg: Local }) {
           aria-label="Video player"
         >
           <div className="relative max-h-full max-w-3xl w-full" onClick={(e) => e.stopPropagation()}>
-            <button
-              onClick={() => setOpen(false)}
-              className="absolute -top-10 right-0 grid h-8 w-8 place-items-center rounded-full bg-white/20 text-white hover:bg-white/30 text-base font-bold"
-              aria-label="Close"
-            >
-              ✕
-            </button>
+            <div className="absolute -top-12 right-0 flex items-center gap-2">
+              <button
+                type="button"
+                onClick={() => downloadMedia(src, `justus-video-${Date.now()}.mp4`)}
+                className="flex h-9 items-center gap-1.5 rounded-full bg-white/20 px-3 text-xs font-semibold text-white backdrop-blur hover:bg-white/30 active:scale-95 transition"
+                aria-label="Download video"
+              >
+                <IconDownload size={14} />
+                <span>Download</span>
+              </button>
+              <button
+                onClick={() => setOpen(false)}
+                className="grid h-9 w-9 place-items-center rounded-full bg-white/20 text-white hover:bg-white/30 text-base font-bold transition active:scale-95"
+                aria-label="Close"
+              >
+                ✕
+              </button>
+            </div>
             <video
               src={src}
               controls
@@ -754,6 +832,9 @@ function Composer(props: {
   replyTo: Local | null;
   replyName: string;
   onCancelReply: () => void;
+  editingMessage: Local | null;
+  onCancelEdit: () => void;
+  onSaveEdit: (id: string, body: string) => void;
   onSendText: (body: string) => void;
   onSendVoice: (blob: Blob, ms: number) => void;
   onPickMedia: (file: File) => void;
@@ -768,6 +849,7 @@ function Composer(props: {
   const area = useRef<HTMLTextAreaElement>(null);
   const lastTyping = useRef(0);
   const sendBurst = useSendBurst();
+  const savedDraft = useRef<string | null>(null);
 
   // Unsent drafts survive refreshes and flaky connections.
   useEffect(() => {
@@ -775,18 +857,36 @@ function Composer(props: {
       setText(localStorage.getItem(draftKey) ?? "");
     } catch {}
   }, [draftKey]);
+
   useEffect(() => {
-    try {
-      if (text) localStorage.setItem(draftKey, text);
-      else localStorage.removeItem(draftKey);
-    } catch {}
-  }, [text, draftKey]);
+    if (props.editingMessage) {
+      if (savedDraft.current === null) {
+        savedDraft.current = text;
+      }
+      setText(props.editingMessage.body || "");
+      area.current?.focus();
+    } else if (savedDraft.current !== null) {
+      setText(savedDraft.current);
+      savedDraft.current = null;
+    }
+  }, [props.editingMessage]);
+
+  useEffect(() => {
+    if (!props.editingMessage) {
+      try {
+        if (text) localStorage.setItem(draftKey, text);
+        else localStorage.removeItem(draftKey);
+      } catch {}
+    }
+  }, [text, draftKey, props.editingMessage]);
+
   useEffect(() => {
     const el = area.current;
     if (!el) return;
     el.style.height = "auto";
     el.style.height = `${Math.min(el.scrollHeight, 140)}px`;
   }, [text]);
+
   useEffect(() => {
     if (props.replyTo) area.current?.focus();
   }, [props.replyTo]);
@@ -794,14 +894,39 @@ function Composer(props: {
   const submit = () => {
     const body = text.trim();
     if (!body) return;
-    props.onSendText(body.slice(0, 4000));
-    setText("");
+    if (props.editingMessage) {
+      props.onSaveEdit(props.editingMessage.id, body.slice(0, 4000));
+      savedDraft.current = null;
+      setText("");
+    } else {
+      props.onSendText(body.slice(0, 4000));
+      setText("");
+    }
   };
 
   return (
     <div className="border-t border-line bg-raised/95 px-3 pb-2 pt-2 md:pb-3">
       <div className="mx-auto max-w-2xl">
-        {props.replyTo && (
+        {props.editingMessage ? (
+          <div className="mb-2 flex items-center justify-between rounded-2xl bg-surface px-3 py-2 text-sm border border-rose/30">
+            <div className="flex items-center gap-2 min-w-0">
+              <IconEdit size={16} className="text-rose shrink-0" />
+              <div className="min-w-0">
+                <span className="font-semibold text-rose text-xs block">Editing your message</span>
+                <span className="truncate text-ink-soft text-xs block">{props.editingMessage.body}</span>
+              </div>
+            </div>
+            <button
+              onClick={() => {
+                props.onCancelEdit();
+              }}
+              aria-label="Cancel editing"
+              className="h-7 w-7 rounded-full hover:bg-surface-2 flex items-center justify-center text-ink-faint hover:text-ink transition"
+            >
+              ✕
+            </button>
+          </div>
+        ) : props.replyTo ? (
           <div className="mb-2 flex items-center gap-2 rounded-2xl bg-surface px-3 py-2 text-sm">
             <IconReply size={16} className="text-rose" />
             <span className="min-w-0 flex-1 truncate text-ink-soft">
@@ -811,7 +936,8 @@ function Composer(props: {
               ✕
             </button>
           </div>
-        )}
+        ) : null}
+
         <div className="flex items-end gap-1">
           {recording ? (
             <VoiceRecorder
@@ -846,7 +972,7 @@ function Composer(props: {
                 rows={1}
                 value={text}
                 maxLength={4000}
-                placeholder="Write something sweet…"
+                placeholder={props.editingMessage ? "Edit your message…" : "Write something sweet…"}
                 aria-label="Message"
                 onChange={(e) => {
                   setText(e.target.value);
@@ -864,8 +990,19 @@ function Composer(props: {
                 className="scrollbar-thin min-h-11 flex-1 resize-none rounded-3xl border border-line bg-surface px-4 py-2.5 text-[15px] placeholder:text-ink-faint focus:border-rose focus:outline-none"
               />
               {text.trim() ? (
-                <button aria-label="Send" onClick={submit} className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-rose-strong text-[var(--bubble-me-ink)] active:scale-95">
-                  <IconSend size={20} />
+                <button
+                  aria-label={props.editingMessage ? "Save edit" : "Send"}
+                  title={props.editingMessage ? "Save edit" : "Send"}
+                  onClick={submit}
+                  className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-rose-strong text-[var(--bubble-me-ink)] active:scale-95 transition"
+                >
+                  {props.editingMessage ? (
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} className="h-5 w-5">
+                      <path d="M20 6L9 17l-5-5" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                  ) : (
+                    <IconSend size={20} />
+                  )}
                 </button>
               ) : (
                 <MicButton onClick={() => setRecording(true)} />
@@ -896,3 +1033,4 @@ function Composer(props: {
     </div>
   );
 }
+
