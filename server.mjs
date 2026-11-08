@@ -196,13 +196,26 @@ setInterval(async () => {
 }, 25_000);
 
 // Database change feed
+let listenRetry;
+function retryListen(client) {
+  if (listenRetry) return;
+  listenRetry = setTimeout(() => {
+    listenRetry = undefined;
+    listen().catch((e) => {
+      console.error("[realtime] could not listen:", e.message);
+      retryListen();
+    });
+  }, 2000);
+  client?.end().catch(() => {});
+}
+
 async function listen() {
   const client = new pg.Client({ connectionString: DATABASE_URL, ssl });
   client.on("error", (e) => {
     console.error("[realtime] listener error:", e.message);
-    client.end().catch(() => {});
-    setTimeout(listen, 2000);
+    retryListen(client);
   });
+  client.on("end", () => retryListen());
   await client.connect();
   await client.query("listen justus_changes");
   client.on("notification", async (n) => {
@@ -222,7 +235,7 @@ async function listen() {
 }
 await listen().catch((e) => {
   console.error("[realtime] could not listen:", e.message);
-  setTimeout(listen, 2000);
+  retryListen();
 });
 
 const server = createServer((req, res) => handle(req, res));
